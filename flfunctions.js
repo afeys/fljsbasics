@@ -4,6 +4,17 @@
  ================================================================================
  */
 class FLFunctions {
+    
+    /**
+     * returns the url base for the current page. 
+     * example: if you are currently on paget http://microsoft.com/view/blabla.php
+     * it will return http://microsoft.com
+     * @returns {String}
+     */
+    static getUrlBase() {
+        return location.protocol.split(':')[0] + '://' + location.host + '/';
+    }
+    
     /**
      * generate a unique identifier
      * @param  {String} prefix A prefix that is put in front of the uniq identifier
