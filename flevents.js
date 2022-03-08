@@ -28,6 +28,10 @@
 // Needs the FLFunctions class (provided in flfunctions.js)
 // if you want to load the events after page loaded
 //
+// Extra events (non-standard javascript events)
+// ---------------------------------------------
+// if you use an event of type 'enterkey' on a text input field it
+// may be used to trigger something when pressing enter on the field. 
 // ---------------------------------------------------------------------------
 
 class FLEvent {
@@ -71,10 +75,21 @@ class FLEvent {
         let senderel = document.getElementsByName(this._sendername);
         if (senderel.length > 0) {
             for (let i = 0; i < senderel.length; i++) {
-                for (let receiver of this._receivers) {
-                    senderel[i].addEventListener(this._type, function (e) {
-                        window[receiver](e, i);
-                    });
+                if (this._type === "enterkey") {
+                    for (let receiver of this._receivers) {
+                        senderel[i].addEventListener("keyup", function (e) {
+                            e.preventDefault();
+                            if (e.keyCode === 13) {
+                                window[receiver](e, i);
+                            }
+                        });
+                    }
+                } else {
+                    for (let receiver of this._receivers) {
+                        senderel[i].addEventListener(this._type, function (e) {
+                            window[receiver](e, i);
+                        });
+                    }
                 }
             }
         }
@@ -82,9 +97,20 @@ class FLEvent {
     attachEventListenerById() {
         let senderel = document.getElementById(this._senderid);
         for (let receiver of this._receivers) {
-            senderel.addEventListener(this._type, function (e) {
-                window[receiver](e);
-            });
+                if (this._type === "enterkey") {
+                    for (let receiver of this._receivers) {
+                        senderel.addEventListener("keyup", function (e) {
+                            e.preventDefault();
+                            if (e.keyCode === 13) {
+                                window[receiver](e);
+                            }
+                        });
+                    }
+                } else {
+                    senderel.addEventListener(this._type, function (e) {
+                        window[receiver](e);
+                    });
+                }
         }
     }
     activate() {
