@@ -3,8 +3,28 @@
  FLFunctions
  ================================================================================
  */
+
+/* async function have to remain outside the FLFunctions class  */
+async function waitFor(f, timeoutMs) {
+    return new Promise((resolve, reject) => {
+        let timeWas = new Date();
+        let wait = setInterval(function () {
+            if (f()) {
+                console.log("Flfunctions.js: resolved '" + f + "' after", new Date() - timeWas, "ms");
+                clearInterval(wait);
+                resolve();
+            } else if (new Date() - timeWas > timeoutMs) { // Timeout
+                console.log("Flfunctions.js: rejected '" + f + "' after", new Date() - timeWas, "ms");
+                clearInterval(wait);
+                reject();
+            }
+        }, 20);
+    });
+}
+
+
 class FLFunctions {
-    
+
     /**
      * returns the url base for the current page. 
      * example: if you are currently on paget http://microsoft.com/view/blabla.php
@@ -14,7 +34,7 @@ class FLFunctions {
     static getUrlBase() {
         return location.protocol.split(':')[0] + '://' + location.host + '/';
     }
-    
+
     /**
      * generate a unique identifier
      * @param  {String} prefix A prefix that is put in front of the uniq identifier
@@ -197,30 +217,30 @@ class FLFunctions {
     static setMarginTop(id, height) {
         let element = document.getElementById(id);
         if (FLFunctions.isElement(element)) {
-            element.style.marginTop=height + 'px';
+            element.style.marginTop = height + 'px';
         }
     }
     static setPaddingTop(id, height) {
         let element = document.getElementById(id);
         if (FLFunctions.isElement(element)) {
-            element.style.paddingTop=height + 'px';
+            element.style.paddingTop = height + 'px';
         }
     }
     static showElementById(id, displaystyle = "initial") {
         let element = document.getElementById(id);
         if (FLFunctions.isElement(element)) {
-            element.style.display = displaystyle; 
+            element.style.display = displaystyle;
             element.style.visibility = "visible";
-        }
+    }
     }
     static hideElementById(id) {
         let element = document.getElementById(id);
         if (FLFunctions.isElement(element)) {
-            element.style.display = "none"; 
+            element.style.display = "none";
             element.style.visibility = "hidden";
         }
     }  
-    
+
     // addChildElementTo
     // params:
     //   id: id of element where the element to add has to be added
@@ -235,7 +255,7 @@ class FLFunctions {
             }
         }
     }
-    
+
     static async loadFromURL(url) {
         try {
             let res = await fetch(url);
@@ -252,9 +272,9 @@ class FLFunctions {
         console.log("inside saveToURL");
         let urltouse = new URL(url);
         let search_params = urltouse.searchParams;
-        
-        
-        if ("_hasattachments" in data ) {
+
+
+        if ("_hasattachments" in data) {
             if (data._hasattachments === true) {
                 console.log("has attachments !!!");
                 useJson = false;
@@ -293,7 +313,7 @@ class FLFunctions {
                 credentials: 'same-origin', // include, *same-origin, omit
                 redirect: 'follow', // manual, *follow, error
                 referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: formData 
+                body: formData
             });
             return await res.json();
         }
@@ -312,5 +332,5 @@ class FLFunctions {
         } else {
             document.addEventListener("DOMContentLoaded", fn);
         }
-    }  
+    }
 }
