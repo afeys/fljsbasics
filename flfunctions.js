@@ -35,7 +35,7 @@ class FLFunctions {
         return location.protocol.split(':')[0] + '://' + location.host + '/';
     }
 
-    static function timeStamp() {
+    static timeStamp() {
         // Create a date object with the current time
         var now = new Date();
 
